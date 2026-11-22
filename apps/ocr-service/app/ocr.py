@@ -55,4 +55,5 @@ class PaddleOcrEngine:
                             box=tuple(int(value) for value in box),
                         )
                     )
+        lines.sort(key=lambda line: (line.box[1], line.box[0]) if line.box else (0, 0))
         return lines

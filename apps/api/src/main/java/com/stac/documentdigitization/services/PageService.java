@@ -7,9 +7,12 @@ import com.stac.documentdigitization.exceptions.FileEmptyException;
 import com.stac.documentdigitization.exceptions.PageLimitExceededException;
 import com.stac.documentdigitization.exceptions.PageNotFoundException;
 import com.stac.documentdigitization.exceptions.PageOrderInvalidException;
+import com.stac.documentdigitization.exceptions.ConversionInProgressException;
+import com.stac.documentdigitization.entities.ConversionStatus;
 import com.stac.documentdigitization.mappers.PageMapper;
 import com.stac.documentdigitization.repositories.DocumentPageRepository;
 import com.stac.documentdigitization.repositories.DocumentRepository;
+import com.stac.documentdigitization.repositories.ConversionJobRepository;
 import com.stac.documentdigitization.services.ImageUploadValidator.ValidatedImage;
 import com.stac.documentdigitization.services.interfaces.StorageService;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class PageService {
 
     private final DocumentRepository documents;
     private final DocumentPageRepository pages;
+    private final ConversionJobRepository jobs;
     private final ImageUploadValidator validator;
     private final StorageService storage;
     private final ObjectCleanupService cleanup;
@@ -109,6 +113,10 @@ public class PageService {
     @Transactional
     public void delete(UUID ownerId, UUID documentId, UUID pageId) {
         ownedForUpdate(ownerId, documentId);
+        if (jobs.existsByDocumentIdAndStatusIn(documentId,
+                List.of(ConversionStatus.PENDING, ConversionStatus.PROCESSING))) {
+            throw new ConversionInProgressException();
+        }
         List<DocumentPage> current = pages.findAllByDocumentIdOrderByPositionAsc(documentId);
         DocumentPage removed = current.stream().filter(page -> page.getId().equals(pageId)).findFirst()
                 .orElseThrow(PageNotFoundException::new);
@@ -136,7 +144,7 @@ public class PageService {
             public void afterCompletion(int status) {
                 if (status == STATUS_ROLLED_BACK && !attemptedKeys.isEmpty()) {
                     try {
-                        cleanup.queueAfterRollback(List.copyOf(attemptedKeys));
+                        cleanup.queueAfterFailure(List.copyOf(attemptedKeys));
                     } catch (RuntimeException error) {
                         log.error("Could not queue cleanup for rolled-back page upload", error);
                     }

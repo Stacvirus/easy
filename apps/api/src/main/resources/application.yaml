@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: document-digitization-api
+  cloud:
+    compatibility-verifier:
+      enabled: false
+    openfeign:
+      client:
+        config:
+          ocr:
+            connect-timeout: 5000
+            read-timeout: 120000
   servlet:
     multipart:
       max-file-size: 10MB
@@ -22,6 +31,10 @@ spring:
     open-in-view: false
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+  task:
+    scheduling:
+      pool:
+        size: 2
 
 management:
   endpoints:
@@ -44,4 +57,7 @@ app:
     region: us-east-1
     bucket: document-images
     access-key: ${MINIO_ROOT_USER:minioadmin}
-    secret-key: ${MINIO_ROOT_PASSWORD:local-development-only}
+    secret-key: ${MINIO_ROOT_PASSWORD}
+  ocr:
+    url: ${OCR_SERVICE_URL:http://localhost:8000}
+    token: ${OCR_INTERNAL_TOKEN}

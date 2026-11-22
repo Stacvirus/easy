@@ -4,10 +4,14 @@ import com.stac.documentdigitization.dtos.requests.DocumentCreateRequestDto;
 import com.stac.documentdigitization.dtos.responses.DocumentResponseDto;
 import com.stac.documentdigitization.entities.Document;
 import com.stac.documentdigitization.exceptions.DocumentNotFoundException;
+import com.stac.documentdigitization.exceptions.ConversionInProgressException;
 import com.stac.documentdigitization.exceptions.SubjectNotFoundException;
 import com.stac.documentdigitization.mappers.DocumentMapper;
 import com.stac.documentdigitization.repositories.DocumentRepository;
 import com.stac.documentdigitization.repositories.DocumentPageRepository;
+import com.stac.documentdigitization.repositories.ConversionJobRepository;
+import com.stac.documentdigitization.repositories.DocumentExportRepository;
+import com.stac.documentdigitization.entities.ConversionStatus;
 import com.stac.documentdigitization.repositories.SubjectRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +27,8 @@ public class DocumentService {
     private final DocumentRepository documents;
     private final SubjectRepository subjects;
     private final DocumentPageRepository pages;
+    private final ConversionJobRepository jobs;
+    private final DocumentExportRepository exports;
     private final ObjectCleanupService cleanup;
     private final DocumentMapper mapper;
 
@@ -61,8 +67,13 @@ public class DocumentService {
     @Transactional
     public void delete(UUID ownerId, UUID id) {
         Document document = documents.findOwnedForUpdate(id, ownerId).orElseThrow(DocumentNotFoundException::new);
+        if (jobs.existsByDocumentIdAndStatusIn(id, List.of(ConversionStatus.PENDING, ConversionStatus.PROCESSING))) {
+            throw new ConversionInProgressException();
+        }
         pages.findAllByDocumentIdOrderByPositionAsc(id)
                 .forEach(page -> cleanup.queue(page.getObjectKey()));
+        exports.findAllByDocumentIdOrderByCreatedAtDesc(id)
+                .forEach(export -> cleanup.queue(export.getObjectKey()));
         documents.delete(document);
     }
 

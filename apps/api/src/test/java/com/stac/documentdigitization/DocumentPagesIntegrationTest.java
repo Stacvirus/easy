@@ -49,6 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "app.auth.jwt-secret=integration-test-secret-with-at-least-32-bytes",
         "app.storage.secret-key=integration-test-minio-secret",
         "app.storage.cleanup-enabled=false",
+        "app.ocr.token=integration-test-ocr-token",
+        "app.conversion.worker-enabled=false",
         "logging.level.org.springframework.web=INFO"
 })
 class DocumentPagesIntegrationTest {

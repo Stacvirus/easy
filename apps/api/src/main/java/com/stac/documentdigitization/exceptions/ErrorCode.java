@@ -30,6 +30,13 @@ public enum ErrorCode {
     FILE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "error.file.type.not.allowed"),
     INVALID_IMAGE(HttpStatus.BAD_REQUEST, "error.invalid.image"),
     STORAGE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "error.storage.unavailable"),
+    DOCUMENT_HAS_NO_PAGES(HttpStatus.CONFLICT, "error.document.has.no.pages"),
+    CONVERSION_IN_PROGRESS(HttpStatus.CONFLICT, "error.conversion.in.progress"),
+    CONVERSION_NOT_FOUND(HttpStatus.NOT_FOUND, "error.conversion.not.found"),
+    EXPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "error.export.not.found"),
+    OCR_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "error.ocr.unavailable"),
+    OCR_FAILED(HttpStatus.UNPROCESSABLE_CONTENT, "error.ocr.failed"),
+    CONVERSION_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "error.conversion.timeout"),
     CONFLICT(HttpStatus.CONFLICT, "error.conflict"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "error.internal");
 

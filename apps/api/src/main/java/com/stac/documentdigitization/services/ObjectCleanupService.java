@@ -26,7 +26,7 @@ public class ObjectCleanupService {
 
     /** A failed upload has rolled back; record attempted object keys in a new transaction. */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void queueAfterRollback(List<String> keys) {
+    public void queueAfterFailure(List<String> keys) {
         deletions.saveAll(keys.stream().map(ObjectDeletion::new).toList());
     }
 

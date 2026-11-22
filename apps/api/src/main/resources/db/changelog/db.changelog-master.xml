@@ -8,4 +8,7 @@
     <changeSet id="V2__document_pages_and_object_deletions" author="document-digitization">
         <sqlFile path="migrations/V2__document_pages_and_object_deletions.sql" relativeToChangelogFile="true" splitStatements="true"/>
     </changeSet>
+    <changeSet id="V3__conversion_jobs_and_exports" author="document-digitization">
+        <sqlFile path="migrations/V3__conversion_jobs_and_exports.sql" relativeToChangelogFile="true" splitStatements="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -1,10 +1,10 @@
 # OCR processing design
 
-The Python service is private to the API and will separate image preprocessing, recognition, structured text results, and DOCX export. The provisional MVP engine is PaddleOCR. Its English and French handwriting benchmark records character error rate, word error rate and processing time. A PaddleOCR detection plus TrOCR recognition pipeline is justified only if measured results warrant it.
+The Python service is private to the API and separates recognition, structured text results, and DOCX export. The provisional MVP engine is PaddleOCR. Its English and French handwriting benchmark records character error rate, word error rate and processing time. A PaddleOCR detection plus TrOCR recognition pipeline is justified only if measured results warrant it.
 
-The API will submit ordered page references or bytes under an authenticated internal contract. The OCR output must retain page identity and text blocks in reading order. Confidence is included only if the engine supplies meaningful values. DOCX generation uses the structured output and inserts page breaks between source pages. Original images remain in MinIO for reference.
+The API sends each original image to `POST /internal/recognize?language=en|fr` with `X-Internal-Token`. The response contains ordered lines, confidence and boxes. It sends the ordered pages to `POST /internal/docx`, which inserts page breaks between source pages. Original images remain in MinIO for reference. Both internal endpoints require `OCR_INTERNAL_TOKEN`.
 
-The current service contains only `/health`; OCR is a callable Python adapter and benchmark script, not yet an HTTP feature endpoint.
+The service also exposes `/health` for process health. PaddleOCR models load on first recognition request, so the first conversion can take longer.
 
 ## First measured baseline (22 November 2026)
 
