@@ -1,23 +1,44 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { App } from './App'
+import type { Auth } from './lib/api'
+import { LanguageProvider } from './lib/i18n'
 import './index.css'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } },
+})
 
-function App() {
-  return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="text-2xl font-semibold">Document Digitization</h1>
-      <p className="mt-3 text-neutral-600">The application foundation is ready.</p>
-    </main>
-  )
+function Root() {
+  const [auth, setAuth] = useState<Auth | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('document-auth')
+      const session = saved ? (JSON.parse(saved) as Auth) : null
+      return session?.accessToken &&
+        session.expiresAt &&
+        new Date(session.expiresAt) > new Date()
+        ? session
+        : null
+    } catch {
+      return null
+    }
+  })
+  function updateAuth(next: Auth | null) {
+    queryClient.clear()
+    if (next) sessionStorage.setItem('document-auth', JSON.stringify(next))
+    else sessionStorage.removeItem('document-auth')
+    setAuth(next)
+  }
+  return <App auth={auth} onAuth={updateAuth} />
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <LanguageProvider>
+        <Root />
+      </LanguageProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

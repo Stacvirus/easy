@@ -34,6 +34,26 @@ services:
       timeout: 3s
       retries: 10
 
+  ocr:
+    build:
+      context: ../apps/ocr-service
+    image: document-digitization-ocr:local
+    environment:
+      OCR_INTERNAL_TOKEN: ${OCR_INTERNAL_TOKEN:?Set OCR_INTERNAL_TOKEN in .env}
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+    ports:
+      - "127.0.0.1:${OCR_PORT:-8000}:8000"
+    volumes:
+      - ocr_models:/root/.paddlex
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
 volumes:
   postgres_data:
   minio_data:
+  ocr_models:
