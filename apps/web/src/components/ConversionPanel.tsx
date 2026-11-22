@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { LoaderCircle, Sparkles } from 'lucide-react'
@@ -24,7 +24,7 @@ export function ConversionPanel({
     success?: string,
   ) => Promise<void>
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [language, setLanguage] = useState<'en' | 'fr'>('en')
   const active =
@@ -34,21 +34,17 @@ export function ConversionPanel({
       <div className="conversion-icon">
         <Sparkles size={23} />
       </div>
-      <span className="eyebrow">{t('DIGITIZE')}</span>
-      <h2>{t('Make it editable.')}</h2>
-      <p>
-        {t(
-          'Recognize handwriting and create a Word file in your saved page order.',
-        )}
-      </p>
+      <span className="eyebrow">{t('conversion.eyebrow')}</span>
+      <h2>{t('conversion.title')}</h2>
+      <p>{t('conversion.description')}</p>
       <label className="field-label">
-        {t('Document language')}
+        {t('conversion.documentLanguage')}
         <select
           value={language}
           onChange={(event) => setLanguage(event.target.value as 'en' | 'fr')}
         >
-          <option value="en">{t('English')}</option>
-          <option value="fr">{t('Français')}</option>
+          <option value="en">{t('common.english')}</option>
+          <option value="fr">{t('common.french')}</option>
         </select>
       </label>
       <button
@@ -63,7 +59,7 @@ export function ConversionPanel({
                 queryKey: ['jobs', documentId],
               })
             },
-            t('Conversion queued. You can keep working while it runs.'),
+            t('conversion.queued'),
           )
         }
       >
@@ -73,16 +69,12 @@ export function ConversionPanel({
           <Sparkles size={17} />
         )}
         {active
-          ? t('Converting…')
+          ? t('conversion.converting')
           : currentJob?.status === 'FAILED'
-            ? t('Try conversion again')
-            : t('Convert to Word')}
+            ? t('conversion.retry')
+            : t('conversion.convert')}
       </button>
-      <p className="conversion-hint">
-        {t(
-          'Handwriting recognition is best effort. Check the Word file after download.',
-        )}
-      </p>
+      <p className="conversion-hint">{t('conversion.accuracyHint')}</p>
       {currentJob && (
         <div
           className={`job-status status-${currentJob.status?.toLowerCase()}`}
@@ -91,19 +83,19 @@ export function ConversionPanel({
           <div>
             <strong>
               {currentJob.status === 'PENDING'
-                ? t('Waiting to start')
+                ? t('conversion.pending')
                 : currentJob.status === 'PROCESSING'
-                  ? t('Recognizing pages')
+                  ? t('conversion.processing')
                   : currentJob.status === 'COMPLETED'
-                    ? t('Conversion complete')
-                    : t('Conversion failed')}
+                    ? t('conversion.completed')
+                    : t('conversion.failed')}
             </strong>
             <span>
               {currentJob.status === 'FAILED'
-                ? currentJob.failureMessage || t('Please try again.')
+                ? currentJob.failureMessage || t('common.tryAgainMessage')
                 : currentJob.status === 'COMPLETED'
-                  ? t('Your Word file is ready below.')
-                  : t('This page updates automatically.')}
+                  ? t('conversion.fileReady')
+                  : t('conversion.autoUpdates')}
             </span>
           </div>
           {active && <LoaderCircle className="spin" size={17} />}

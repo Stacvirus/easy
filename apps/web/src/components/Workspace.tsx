@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -26,7 +26,7 @@ export function Workspace({
   auth: Auth
   onSignOut: () => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const token = auth.accessToken as string
   const queryClient = useQueryClient()
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -66,9 +66,7 @@ export function Workspace({
             </span>{' '}
             Document Studio
           </span>
-          <span className="topbar-caption">
-            {t('Your documents, in good order.')}
-          </span>
+          <span className="topbar-caption">{t('workspace.topbarCaption')}</span>
           <div className="topbar-right">
             <LanguageSwitch />
             <span className="topbar-date">
@@ -78,8 +76,8 @@ export function Workspace({
               {auth.email?.slice(0, 1).toUpperCase() || 'U'}
             </span>
             <button
-              title={t('Sign out')}
-              aria-label={t('Sign out')}
+              title={t('common.signOut')}
+              aria-label={t('common.signOut')}
               className="mobile-signout"
               onClick={onSignOut}
             >
@@ -96,7 +94,7 @@ export function Workspace({
               {notice.error ? <CircleAlert size={17} /> : <Check size={17} />}
               {notice.text}
             </span>
-            <button title={t('Dismiss')} onClick={() => setNotice(null)}>
+            <button title={t('common.dismiss')} onClick={() => setNotice(null)}>
               <X size={16} />
             </button>
           </div>
@@ -135,7 +133,7 @@ export function Workspace({
             setShowCreate(false)
             void queryClient.invalidateQueries({ queryKey: ['documents'] })
             if (document.id) setSelectedId(document.id)
-            message(t('Document created. Add your pages to begin.'))
+            message(t('workspace.documentCreated'))
           }}
         />
       )}

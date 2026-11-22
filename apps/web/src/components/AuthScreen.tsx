@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useState, type FormEvent } from 'react'
 import {
   ArrowRight,
@@ -13,7 +13,7 @@ import { errorText } from '../lib/presentation'
 import { LanguageSwitch } from './LanguageSwitch'
 
 export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -46,26 +46,20 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
           Document Studio
         </div>
         <div className="auth-story-body">
-          <span className="eyebrow light">{t('YOUR NOTES, ORGANIZED')}</span>
+          <span className="eyebrow light">{t('auth.storyEyebrow')}</span>
           <h1>
-            {t('From paper to')}
+            {t('auth.storyTitleFirst')}
             <br />
-            <em>{t('possibility.')}</em>
+            <em>{t('auth.storyTitleSecond')}</em>
           </h1>
-          <p>
-            {t(
-              'Turn lecture notes and documents into editable Word files, with every original page kept in order.',
-            )}
-          </p>
+          <p>{t('auth.storyDescription')}</p>
           <div className="story-steps">
-            <span>{t('01 Capture')}</span>
-            <span>{t('02 Organize')}</span>
-            <span>{t('03 Convert')}</span>
+            <span>{t('auth.stepCapture')}</span>
+            <span>{t('auth.stepOrganize')}</span>
+            <span>{t('auth.stepConvert')}</span>
           </div>
         </div>
-        <span className="auth-footnote">
-          {t('A quieter place for your academic work.')}
-        </span>
+        <span className="auth-footnote">{t('auth.storyFootnote')}</span>
       </div>
       <div className="auth-panel">
         <div className="auth-language">
@@ -73,21 +67,20 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
         </div>
         <div className="auth-card">
           <span className="eyebrow">
-            {t('WELCOME')} {mode === 'login' ? t('BACK') : t('IN')}
+            {t('auth.welcome')}{' '}
+            {mode === 'login' ? t('auth.back') : t('auth.in')}
           </span>
           <h2>
-            {mode === 'login'
-              ? t('Sign in to your workspace')
-              : t('Create your workspace')}
+            {mode === 'login' ? t('auth.signInTitle') : t('auth.registerTitle')}
           </h2>
           <p className="muted">
             {mode === 'login'
-              ? t('Your documents are right where you left them.')
-              : t('Start organizing your notes in a few moments.')}
+              ? t('auth.signInDescription')
+              : t('auth.registerDescription')}
           </p>
           <form className="stack-form" onSubmit={submit}>
             <label>
-              {t('Email address')}
+              {t('auth.email')}
               <input
                 type="email"
                 autoComplete="email"
@@ -98,7 +91,7 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
               />
             </label>
             <label>
-              {t('Password')}
+              {t('auth.password')}
               <span className="password-field">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -109,13 +102,13 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
                   required
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  placeholder={t('Enter your password')}
+                  placeholder={t('auth.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   className="password-toggle"
                   aria-label={t(
-                    showPassword ? 'Hide password' : 'Show password',
+                    showPassword ? 'auth.hidePassword' : 'auth.showPassword',
                   )}
                   aria-pressed={showPassword}
                   onClick={() => setShowPassword((visible) => !visible)}
@@ -136,11 +129,13 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
               ) : (
                 <ArrowRight size={17} />
               )}
-              {mode === 'login' ? t('Sign in') : t('Create account')}
+              {mode === 'login' ? t('auth.signIn') : t('auth.createAccount')}
             </button>
           </form>
           <div className="auth-switch">
-            {mode === 'login' ? t('New here?') : t('Already have an account?')}{' '}
+            {mode === 'login'
+              ? t('auth.newHere')
+              : t('auth.alreadyHaveAccount')}{' '}
             <button
               className="text-button"
               onClick={() => {
@@ -148,7 +143,9 @@ export function AuthScreen({ onAuth }: { onAuth: (auth: Auth) => void }) {
                 setError('')
               }}
             >
-              {mode === 'login' ? t('Create an account') : t('Sign in')}
+              {mode === 'login'
+                ? t('auth.createAccountLink')
+                : t('auth.signIn')}
             </button>
           </div>
         </div>

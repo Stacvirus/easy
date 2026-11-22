@@ -1,5 +1,5 @@
 import type { components } from './api-types'
-import { getLanguage, translate } from './i18n'
+import i18n from './i18n'
 
 type Schema = components['schemas']
 export type Auth = Schema['AuthResponseDto']
@@ -27,7 +27,7 @@ async function request<T>(
   token?: string,
 ): Promise<T> {
   const headers = new Headers(options.headers)
-  headers.set('Accept-Language', getLanguage())
+  headers.set('Accept-Language', i18n.resolvedLanguage === 'fr' ? 'fr' : 'en')
   if (token) headers.set('Authorization', `Bearer ${token}`)
   if (options.body && !(options.body instanceof FormData))
     headers.set('Content-Type', 'application/json')
@@ -36,10 +36,7 @@ async function request<T>(
   try {
     response = await fetch(`${base}/api/v1${path}`, { ...options, headers })
   } catch {
-    throw new ApiError(
-      translate('Cannot reach the server. Check that the API is running.'),
-      0,
-    )
+    throw new ApiError(i18n.t('errors.network'), 0)
   }
 
   if (!response.ok) {
@@ -47,7 +44,8 @@ async function request<T>(
       message?: string
     } | null
     throw new ApiError(
-      body?.message || `Request failed (${response.status})`,
+      body?.message ||
+        i18n.t('errors.requestFailed', { status: response.status }),
       response.status,
     )
   }

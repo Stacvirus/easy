@@ -17,4 +17,4 @@ To run OCR directly instead of through Compose, stop the Compose OCR service wit
 
 API integration tests use an isolated PostgreSQL Testcontainer. From `apps/api`, run `mvn test` with Java 21 and Docker available. The tests do not write to the Compose development database.
 
-Frontend API types are generated from the running API's OpenAPI document. From `apps/web`, run `npm run generate:api`; set `API_OPENAPI_URL` when the API is not at `http://localhost:8080/v3/api-docs`. Commit the resulting `src/lib/api-types.ts` whenever the API contract changes.
+Frontend API types are generated from the running API's OpenAPI document. From `apps/web`, run `npm run generate:api`; set `API_OPENAPI_URL` when the API is not at `http://localhost:8080/v3/api-docs`. Commit the resulting `src/lib/api-types.ts` whenever the API contract changes. See [web localization](web-localization.md) for adding interface translations.

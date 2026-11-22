@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { FileImage, LoaderCircle, X } from 'lucide-react'
@@ -16,7 +16,7 @@ export function ImagePreview({
   pageId: string
   onClose: () => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const image = useQuery({
     queryKey: ['page-image', documentId, pageId],
     queryFn: () => api.pageContent(token, documentId, pageId),
@@ -34,14 +34,14 @@ export function ImagePreview({
         className="preview-dialog"
         role="dialog"
         aria-modal="true"
-        aria-label={t('Original page preview')}
+        aria-label={t('preview.dialogLabel')}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="preview-header">
           <span>
-            <FileImage size={18} /> {t('Original page')}
+            <FileImage size={18} /> {t('preview.title')}
           </span>
-          <button title={t('Close preview')} onClick={onClose}>
+          <button title={t('preview.close')} onClick={onClose}>
             <X size={21} />
           </button>
         </div>
@@ -51,7 +51,7 @@ export function ImagePreview({
           ) : image.isError ? (
             <p className="error-text">{errorText(image.error)}</p>
           ) : url ? (
-            <img src={url} alt={t('Original uploaded page')} />
+            <img src={url} alt={t('preview.imageAlt')} />
           ) : null}
         </div>
       </div>

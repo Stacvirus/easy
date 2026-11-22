@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useRef, useState } from 'react'
 import {
   DndContext,
@@ -42,7 +42,7 @@ export function DocumentPages({
   ) => Promise<void>
   onMessage: (text: string, error?: boolean) => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const fileInput = useRef<HTMLInputElement>(null)
   const [previewId, setPreviewId] = useState<string | null>(null)
@@ -63,18 +63,18 @@ export function DocumentPages({
           file.size > 10 * 1024 * 1024,
       )
     ) {
-      onMessage(t('Use JPEG or PNG images under 10 MB each.'), true)
+      onMessage(t('pages.invalidType'), true)
       return
     }
     if (
       selected.reduce((size, file) => size + file.size, 0) >
       50 * 1024 * 1024
     ) {
-      onMessage(t('Upload at most 50 MB at a time.'), true)
+      onMessage(t('pages.uploadTooLarge'), true)
       return
     }
     if (pageList.length + selected.length > 50) {
-      onMessage(t('A document can have at most 50 pages.'), true)
+      onMessage(t('pages.tooMany'), true)
       return
     }
     void run(
@@ -83,7 +83,7 @@ export function DocumentPages({
         await api.uploadPages(token, documentId, selected)
         await queryClient.invalidateQueries({ queryKey: ['pages', documentId] })
       },
-      `${selected.length} ${selected.length === 1 ? t('page added.') : t('pages added.')}`,
+      t('pages.added', { count: selected.length }),
     )
   }
   function reorder(next: Page[]) {
@@ -98,7 +98,7 @@ export function DocumentPages({
         )
         await queryClient.invalidateQueries({ queryKey: ['pages', documentId] })
       },
-      t('Page order saved.'),
+      t('pages.orderSaved'),
     )
   }
   function dragEnd(event: DragEndEvent) {
@@ -112,9 +112,9 @@ export function DocumentPages({
       <section className="panel pages-panel">
         <div className="panel-heading">
           <div>
-            <span className="eyebrow">{t('ORIGINALS')}</span>
-            <h2>{t('Document pages')}</h2>
-            <p>{t('Your source images stay available after conversion.')}</p>
+            <span className="eyebrow">{t('pages.eyebrow')}</span>
+            <h2>{t('pages.title')}</h2>
+            <p>{t('pages.description')}</p>
           </div>
           <span className="count-badge">{pageList.length} / 50</span>
         </div>
@@ -143,32 +143,30 @@ export function DocumentPages({
           <div>
             <strong>
               {busy === 'upload'
-                ? t('Uploading pages…')
-                : t('Drop images here, or browse')}
+                ? t('pages.uploading')
+                : t('pages.dropOrBrowse')}
             </strong>
-            <span>
-              {t('JPEG or PNG · Up to 10 MB each · 50 pages maximum')}
-            </span>
+            <span>{t('pages.uploadLimits')}</span>
           </div>
           <button
             className="button button-secondary"
             disabled={!!busy || pageList.length >= 50}
             onClick={() => fileInput.current?.click()}
           >
-            {t('Browse files')}
+            {t('pages.browse')}
           </button>
         </div>
         {pages.isLoading ? (
           <div className="panel-empty">
-            <LoaderCircle className="spin" size={22} /> {t('Loading pages…')}
+            <LoaderCircle className="spin" size={22} /> {t('pages.loading')}
           </div>
         ) : pages.isError ? (
           <div className="panel-empty error-text">{errorText(pages.error)}</div>
         ) : pageList.length ? (
           <>
             <div className="page-list-head">
-              <span>{t('PAGE ORDER')}</span>
-              <span>{t('Drag or use arrows to arrange')}</span>
+              <span>{t('pages.orderHeading')}</span>
+              <span>{t('pages.orderHelp')}</span>
             </div>
             <DndContext
               sensors={sensors}
@@ -194,7 +192,9 @@ export function DocumentPages({
                       onDelete={() => {
                         if (
                           !page.id ||
-                          !window.confirm(`${t('Remove page')} ${index + 1}?`)
+                          !window.confirm(
+                            t('pages.removeConfirm', { number: index + 1 }),
+                          )
                         )
                           return
                         void run(
@@ -209,7 +209,7 @@ export function DocumentPages({
                               queryKey: ['pages', documentId],
                             })
                           },
-                          t('Page removed.'),
+                          t('pages.removed'),
                         )
                       }}
                     />
@@ -221,8 +221,8 @@ export function DocumentPages({
         ) : (
           <div className="panel-empty">
             <Image size={27} />
-            <strong>{t('No pages yet')}</strong>
-            <span>{t('Add your first image to start this document.')}</span>
+            <strong>{t('pages.emptyTitle')}</strong>
+            <span>{t('pages.emptyDescription')}</span>
           </div>
         )}
       </section>

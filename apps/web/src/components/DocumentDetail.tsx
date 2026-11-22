@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, CalendarDays, CircleAlert, Trash2 } from 'lucide-react'
@@ -22,7 +22,7 @@ export function DocumentDetail({
   onBack: () => void
   onMessage: (text: string, error?: boolean) => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [busy, setBusy] = useState('')
   const document = useQuery({
@@ -67,10 +67,7 @@ export function DocumentDetail({
     }
   }
   async function deleteDocument() {
-    if (
-      !window.confirm(t('Delete this document and all its pages and exports?'))
-    )
-      return
+    if (!window.confirm(t('detail.deleteConfirm'))) return
     await run(
       'delete-document',
       async () => {
@@ -78,13 +75,13 @@ export function DocumentDetail({
         await queryClient.invalidateQueries({ queryKey: ['documents'] })
         onBack()
       },
-      t('Document deleted.'),
+      t('detail.deleted'),
     )
   }
   return (
     <main className="content detail-content">
       <button className="back-link" onClick={onBack}>
-        <ArrowLeft size={17} /> {t('Back to library')}
+        <ArrowLeft size={17} /> {t('detail.back')}
       </button>
       {document.isError ? (
         <div className="empty-state">
@@ -96,15 +93,15 @@ export function DocumentDetail({
           <div className="detail-heading">
             <div>
               <span className="eyebrow">
-                {t('DOCUMENT /')}{' '}
+                {t('detail.eyebrow')}{' '}
                 {subjectName(subjects, document.data?.subjectId).toUpperCase()}
               </span>
-              <h1>{document.data?.title || t('Loading document…')}</h1>
+              <h1>{document.data?.title || t('detail.loading')}</h1>
               <p>
                 <CalendarDays size={16} />{' '}
                 {labelDate(document.data?.documentDate)}{' '}
-                <span className="bullet">·</span> {pageCount}{' '}
-                {pageCount === 1 ? t('page') : t('pages')}
+                <span className="bullet">·</span>{' '}
+                {t('detail.pageCount', { count: pageCount })}
               </p>
             </div>
             <button
@@ -112,7 +109,7 @@ export function DocumentDetail({
               disabled={active || busy === 'delete-document'}
               onClick={() => void deleteDocument()}
             >
-              <Trash2 size={16} /> {t('Delete document')}
+              <Trash2 size={16} /> {t('detail.delete')}
             </button>
           </div>
           <div className="detail-grid">

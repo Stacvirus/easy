@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useState, type FormEvent } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -37,7 +37,7 @@ export function Sidebar({
   onSignOut: () => void
   onMessage: (text: string, error?: boolean) => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [subjectDraft, setSubjectDraft] = useState('')
   const [addingSubject, setAddingSubject] = useState(false)
@@ -58,7 +58,7 @@ export function Sidebar({
       setAddingSubject(false)
       setEditingSubject(null)
       setSubjectDraft('')
-      onMessage(editingSubject ? t('Subject renamed.') : t('Subject created.'))
+      onMessage(editingSubject ? t('subjects.renamed') : t('subjects.created'))
     } catch (cause) {
       onMessage(errorText(cause), true)
     } finally {
@@ -68,16 +68,14 @@ export function Sidebar({
   async function deleteSubject(subject: Subject) {
     if (
       !subject.id ||
-      !window.confirm(
-        `${t('Delete')} ${subject.name}? ${t('Documents assigned to it must be removed first.')}`,
-      )
+      !window.confirm(t('subjects.deleteConfirm', { name: subject.name }))
     )
       return
     try {
       await api.deleteSubject(token, subject.id)
       if (subjectFilter === subject.id) onSelect('all')
       await queryClient.invalidateQueries({ queryKey: ['subjects'] })
-      onMessage(t('Subject deleted.'))
+      onMessage(t('subjects.deleted'))
     } catch (cause) {
       onMessage(errorText(cause), true)
     }
@@ -92,14 +90,14 @@ export function Sidebar({
         Document Studio
       </div>
       <div className="sidebar-section">
-        <p className="sidebar-label">{t('WORKSPACE')}</p>
+        <p className="sidebar-label">{t('workspace.eyebrow')}</p>
         <button
           className={`nav-item ${subjectFilter === 'all' && !selectedDocument ? 'active' : ''}`}
           onClick={() => {
             onSelect('all')
           }}
         >
-          <FolderClosed size={17} /> {t('All documents')}
+          <FolderClosed size={17} /> {t('library.allDocuments')}
         </button>
         <button
           className={`nav-item ${subjectFilter === 'general' && !selectedDocument ? 'active' : ''}`}
@@ -107,14 +105,14 @@ export function Sidebar({
             onSelect('general')
           }}
         >
-          <FileText size={17} /> {t('General')}
+          <FileText size={17} /> {t('common.general')}
         </button>
       </div>
       <div className="sidebar-section subjects-section">
         <div className="sidebar-heading">
-          <p className="sidebar-label">{t('SUBJECTS')}</p>
+          <p className="sidebar-label">{t('subjects.eyebrow')}</p>
           <button
-            title={t('Add subject')}
+            title={t('subjects.add')}
             className="icon-button"
             onClick={() => {
               setAddingSubject(true)
@@ -125,7 +123,7 @@ export function Sidebar({
             <Plus size={17} />
           </button>
         </div>
-        {isLoading && <p className="sidebar-hint">{t('Loading subjects…')}</p>}
+        {isLoading && <p className="sidebar-hint">{t('subjects.loading')}</p>}
         {allSubjects.map((subject) => (
           <div key={subject.id} className="subject-row">
             <button
@@ -158,12 +156,12 @@ export function Sidebar({
               value={subjectDraft}
               maxLength={100}
               onChange={(event) => setSubjectDraft(event.target.value)}
-              placeholder={t('Subject name')}
-              aria-label={t('Subject name')}
+              placeholder={t('subjects.name')}
+              aria-label={t('subjects.name')}
             />
             <div>
               <button className="small-action" disabled={busy} type="submit">
-                <Check size={14} /> {t('Save')}
+                <Check size={14} /> {t('common.save')}
               </button>
               <button
                 className="small-action subtle"
@@ -173,7 +171,7 @@ export function Sidebar({
                   setEditingSubject(null)
                 }}
               >
-                {t('Cancel')}
+                {t('common.cancel')}
               </button>
               {editingSubject && (
                 <button
@@ -202,7 +200,7 @@ export function Sidebar({
               setSubjectDraft('')
             }}
           >
-            <Plus size={16} /> {t('Add subject')}
+            <Plus size={16} /> {t('subjects.add')}
           </button>
         )}
       </div>
@@ -211,11 +209,11 @@ export function Sidebar({
           {auth.email?.slice(0, 1).toUpperCase() || 'U'}
         </div>
         <div className="account-copy">
-          <strong>{t('My workspace')}</strong>
+          <strong>{t('workspace.myWorkspace')}</strong>
           <span title={auth.email}>{auth.email}</span>
         </div>
         <button
-          title={t('Sign out')}
+          title={t('common.signOut')}
           className="icon-button"
           onClick={onSignOut}
         >

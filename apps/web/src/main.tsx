@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './App'
 import type { Auth } from './lib/api'
-import { LanguageProvider } from './lib/i18n'
+import './lib/i18n'
 import './index.css'
 
 const queryClient = new QueryClient({
@@ -36,9 +36,7 @@ function Root() {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <Root />
-      </LanguageProvider>
+      <Root />
     </QueryClientProvider>
   </StrictMode>,
 )

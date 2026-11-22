@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -39,7 +39,7 @@ export function Library({
   onSelectDocument: (documentId: string) => void
   onCreateDocument: () => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const documents = useQuery({
     queryKey: ['documents', subjectFilter, dateFilter],
     queryFn: () =>
@@ -62,19 +62,15 @@ export function Library({
     <main className="content library-content">
       <div className="page-intro">
         <div>
-          <span className="eyebrow">{t('YOUR LIBRARY')}</span>
-          <h1>{t('Everything in its place.')}</h1>
-          <p>
-            {t(
-              'Keep the original pages together, then turn them into an editable document.',
-            )}
-          </p>
+          <span className="eyebrow">{t('library.eyebrow')}</span>
+          <h1>{t('library.title')}</h1>
+          <p>{t('library.description')}</p>
         </div>
         <button
           className="button button-primary"
           onClick={() => onCreateDocument()}
         >
-          <Plus size={17} /> {t('New document')}
+          <Plus size={17} /> {t('common.newDocument')}
         </button>
       </div>
       <div className="stats-strip">
@@ -84,7 +80,7 @@ export function Library({
           </span>
           <div>
             <strong>{documents.data?.length ?? '—'}</strong>
-            <span>{t('Documents')}</span>
+            <span>{t('library.documentsStat')}</span>
           </div>
         </div>
         <div>
@@ -93,26 +89,23 @@ export function Library({
           </span>
           <div>
             <strong>{subjects.length}</strong>
-            <span>{t('Subjects')}</span>
+            <span>{t('library.subjectsStat')}</span>
           </div>
         </div>
         <div className="stat-note">
-          <Sparkles size={17} /> {t('From image to editable Word file')}
+          <Sparkles size={17} /> {t('library.statNote')}
         </div>
       </div>
       <div className="section-head">
         <div>
           <h2>
             {subjectFilter === 'all'
-              ? t('All documents')
+              ? t('library.allDocuments')
               : subjectFilter === 'general'
-                ? t('General documents')
+                ? t('library.generalDocuments')
                 : subjectName(subjects, subjectFilter)}
           </h2>
-          <p>
-            {visible.length}{' '}
-            {visible.length === 1 ? t('document') : t('documents')}
-          </p>
+          <p>{t('library.count', { count: visible.length })}</p>
         </div>
         <div className="filters">
           <label className="search-field">
@@ -120,8 +113,8 @@ export function Library({
             <input
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder={t('Search documents')}
-              aria-label={t('Search documents')}
+              placeholder={t('library.search')}
+              aria-label={t('library.search')}
             />
           </label>
           <label className="date-field">
@@ -130,7 +123,7 @@ export function Library({
               type="date"
               value={dateFilter}
               onChange={(event) => onDateFilterChange(event.target.value)}
-              aria-label={t('Filter by date')}
+              aria-label={t('library.filterByDate')}
             />
           </label>
           {dateFilter && (
@@ -138,7 +131,7 @@ export function Library({
               className="clear-filter"
               onClick={() => onDateFilterChange('')}
             >
-              {t('Clear')}
+              {t('common.clear')}
             </button>
           )}
         </div>
@@ -146,7 +139,7 @@ export function Library({
       {documents.isLoading ? (
         <div className="empty-state">
           <LoaderCircle className="spin" size={30} />
-          <p>{t('Loading your documents…')}</p>
+          <p>{t('library.loading')}</p>
         </div>
       ) : documents.isError ? (
         <div className="empty-state">
@@ -156,7 +149,7 @@ export function Library({
             className="button button-secondary"
             onClick={() => void documents.refetch()}
           >
-            {t('Try again')}
+            {t('common.tryAgain')}
           </button>
         </div>
       ) : visible.length ? (
@@ -190,19 +183,19 @@ export function Library({
           </div>
           <h3>
             {search || dateFilter || subjectFilter !== 'all'
-              ? t('No documents match this view')
-              : t('A fresh page awaits')}
+              ? t('library.noMatches')
+              : t('library.emptyTitle')}
           </h3>
           <p>
             {search || dateFilter || subjectFilter !== 'all'
-              ? t('Try another search, date, or subject.')
-              : t('Create a document, add your images, and start converting.')}
+              ? t('library.noMatchesHelp')
+              : t('library.emptyHelp')}
           </p>
           <button
             className="button button-primary"
             onClick={() => onCreateDocument()}
           >
-            <Plus size={17} /> {t('New document')}
+            <Plus size={17} /> {t('common.newDocument')}
           </button>
         </div>
       )}

@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useState, type FormEvent } from 'react'
 import { CircleAlert, FilePlus2, X } from 'lucide-react'
 import { api, type Document, type Subject } from '../lib/api'
@@ -17,7 +17,7 @@ export function CreateDocument({
   onClose: () => void
   onCreated: (document: Document) => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [date, setDate] = useState(today())
   const [subjectId, setSubjectId] = useState(initialSubject)
@@ -52,31 +52,29 @@ export function CreateDocument({
       >
         <button
           className="dialog-close"
-          aria-label={t('Close')}
+          aria-label={t('common.close')}
           onClick={onClose}
         >
           <X size={19} />
         </button>
-        <span className="eyebrow">{t('NEW DOCUMENT')}</span>
-        <h2 id="create-title">{t('Give your pages a home.')}</h2>
-        <p className="muted">
-          {t('Start with the details. You can add one or several images next.')}
-        </p>
+        <span className="eyebrow">{t('createDocument.eyebrow')}</span>
+        <h2 id="create-title">{t('createDocument.title')}</h2>
+        <p className="muted">{t('createDocument.description')}</p>
         <form className="stack-form" onSubmit={submit}>
           <label>
-            {t('Document title')}
+            {t('createDocument.documentTitle')}
             <input
               autoFocus
               required
               maxLength={200}
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder={t('e.g. Week 3 lecture notes')}
+              placeholder={t('createDocument.titleExample')}
             />
           </label>
           <div className="form-grid">
             <label>
-              {t('Date')}
+              {t('common.date')}
               <input
                 required
                 type="date"
@@ -85,12 +83,12 @@ export function CreateDocument({
               />
             </label>
             <label>
-              {t('Subject')}
+              {t('common.subject')}
               <select
                 value={subjectId}
                 onChange={(event) => setSubjectId(event.target.value)}
               >
-                <option value="">{t('General')}</option>
+                <option value="">{t('common.general')}</option>
                 {subjects.map((subject) => (
                   <option key={subject.id} value={subject.id}>
                     {subject.name}
@@ -111,10 +109,10 @@ export function CreateDocument({
               type="button"
               onClick={onClose}
             >
-              {t('Cancel')}
+              {t('common.cancel')}
             </button>
             <button className="button button-primary" disabled={busy}>
-              <FilePlus2 size={17} /> {t('Create document')}
+              <FilePlus2 size={17} /> {t('createDocument.create')}
             </button>
           </div>
         </form>

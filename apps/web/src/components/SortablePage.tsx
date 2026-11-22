@@ -1,4 +1,4 @@
-import { useI18n } from '../lib/i18n'
+import { useTranslation } from 'react-i18next'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import {
@@ -28,7 +28,7 @@ export function SortablePage({
   onMove: (offset: number) => void
   onDelete: () => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const {
     attributes,
     listeners,
@@ -45,8 +45,8 @@ export function SortablePage({
     >
       <button
         className="drag-handle"
-        title={t('Drag to reorder')}
-        aria-label={`${t('Drag page')} ${index + 1} ${t('to reorder')}`}
+        title={t('pages.dragToReorder')}
+        aria-label={t('pages.dragPageAria', { number: index + 1 })}
         disabled={disabled}
         {...attributes}
         {...listeners}
@@ -58,11 +58,11 @@ export function SortablePage({
         <FileImage size={21} />
       </span>
       <button className="page-title" onClick={onPreview}>
-        <strong>
-          {t('Page')} {index + 1}
-        </strong>
+        <strong>{t('pages.pageNumber', { number: index + 1 })}</strong>
         <span>
-          {page.contentType === 'image/png' ? t('PNG image') : t('JPEG image')}{' '}
+          {page.contentType === 'image/png'
+            ? t('pages.pngImage')
+            : t('pages.jpegImage')}{' '}
           ·{' '}
           {page.sizeBytes
             ? Math.max(1, Math.round(page.sizeBytes / 1024))
@@ -72,31 +72,31 @@ export function SortablePage({
       </button>
       <div className="page-actions">
         <button
-          title={t('Move up')}
-          aria-label={`${t('Move page')} ${index + 1} ${t('up')}`}
+          title={t('pages.moveUp')}
+          aria-label={t('pages.moveUpAria', { number: index + 1 })}
           disabled={disabled || index === 0}
           onClick={() => onMove(-1)}
         >
           <ArrowUp size={16} />
         </button>
         <button
-          title={t('Move down')}
-          aria-label={`${t('Move page')} ${index + 1} ${t('down')}`}
+          title={t('pages.moveDown')}
+          aria-label={t('pages.moveDownAria', { number: index + 1 })}
           disabled={disabled || index === total - 1}
           onClick={() => onMove(1)}
         >
           <ArrowDown size={16} />
         </button>
         <button
-          title={t('Preview')}
-          aria-label={`${t('Preview page')} ${index + 1}`}
+          title={t('pages.preview')}
+          aria-label={t('pages.previewAria', { number: index + 1 })}
           onClick={onPreview}
         >
           <Image size={16} />
         </button>
         <button
-          title={t('Remove page')}
-          aria-label={`${t('Remove page')} ${index + 1}`}
+          title={t('pages.remove')}
+          aria-label={t('pages.removeAria', { number: index + 1 })}
           disabled={disabled}
           onClick={onDelete}
         >
