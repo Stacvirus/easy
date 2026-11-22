@@ -7,4 +7,5 @@ target/
 __pycache__/
 .pytest_cache/
 *.pyc
+apps/ocr-service/benchmark-data/
 .idea/

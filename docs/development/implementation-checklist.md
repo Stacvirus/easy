@@ -2,7 +2,7 @@
 
 - [x] Inspect reference backend and document adopted conventions.
 - [x] Bootstrap API, web, OCR, Compose and local setup.
-- [ ] Benchmark PaddleOCR on representative English and French handwriting; record accuracy and latency.
+- [x] Benchmark PaddleOCR on public English and French handwriting lines; record accuracy and latency. See [the measured baseline](../architecture/ocr-processing.md). Target note photos still need evaluation.
 - [ ] Add identity, ownership, subjects and document metadata with migrations and tests.
 - [ ] Store uploaded images, validate files and persist page order; verify reorder after reload.
 - [ ] Add persistent conversion jobs, ordered OCR, DOCX export, status and authorized download.
