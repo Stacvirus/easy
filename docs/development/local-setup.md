@@ -10,6 +10,8 @@ Prerequisites: Docker with Compose, Java 21 with Maven, Node 24 with npm, and Py
 
 PostgreSQL listens on host port 5433; MinIO API on 9000 and console on 9001. Compose builds MinIO from the tagged upstream source because its former public container images are unavailable. The first build downloads Go dependencies and may take several minutes. The default credentials in `.env.example` are local development values only. Change them before any shared deployment. If ports are changed, update the API datasource environment variables accordingly. Stop dependencies with `docker compose -f infrastructure/compose.yaml down`; add `-v` only when intentionally deleting local data.
 
+The API uses `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` from the sourced `.env` file and creates its private `document-images` bucket on the first upload. Set `MINIO_ENDPOINT` if MinIO is not reachable at `http://localhost:9000`. Page uploads are limited to 10 MB each and 50 MB per multipart request.
+
 For a Java 21 container build without host Java 21, run `docker build -t document-api:local apps/api`. `apps/api/Dockerfile`, `apps/ocr-service/Dockerfile`, and `apps/web/Dockerfile` support container builds, while direct process startup remains the normal development path.
 
 For the optional OCR benchmark, install `apps/ocr-service/requirements-ocr.txt` in its virtual environment and follow [the benchmark commands](../architecture/ocr-processing.md). The normal OCR service startup does not download model weights.

@@ -7,6 +7,7 @@ import com.stac.documentdigitization.exceptions.DocumentNotFoundException;
 import com.stac.documentdigitization.exceptions.SubjectNotFoundException;
 import com.stac.documentdigitization.mappers.DocumentMapper;
 import com.stac.documentdigitization.repositories.DocumentRepository;
+import com.stac.documentdigitization.repositories.DocumentPageRepository;
 import com.stac.documentdigitization.repositories.SubjectRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DocumentService {
     private final DocumentRepository documents;
     private final SubjectRepository subjects;
+    private final DocumentPageRepository pages;
+    private final ObjectCleanupService cleanup;
     private final DocumentMapper mapper;
 
     /** Attach a subject only when the authenticated user owns it. */
@@ -57,7 +60,10 @@ public class DocumentService {
     /** Delete only a document owned by the authenticated user. */
     @Transactional
     public void delete(UUID ownerId, UUID id) {
-        documents.delete(findOwned(ownerId, id));
+        Document document = documents.findOwnedForUpdate(id, ownerId).orElseThrow(DocumentNotFoundException::new);
+        pages.findAllByDocumentIdOrderByPositionAsc(id)
+                .forEach(page -> cleanup.queue(page.getObjectKey()));
+        documents.delete(document);
     }
 
     private Document findOwned(UUID ownerId, UUID id) {

@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.datasource.url=jdbc:tc:postgresql:16-alpine:///document_digitization_test",
         "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver",
         "app.auth.jwt-secret=integration-test-secret-with-at-least-32-bytes",
+        "app.storage.secret-key=integration-test-minio-secret",
+        "app.storage.cleanup-enabled=false",
         "logging.level.org.springframework.web=INFO",
         "logging.level.org.hibernate.SQL=INFO"
 })

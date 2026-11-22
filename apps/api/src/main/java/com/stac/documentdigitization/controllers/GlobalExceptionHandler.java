@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /** Converts expected application and validation failures into consistent JSON errors. */
 @RestControllerAdvice
@@ -68,6 +71,23 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiErrorDto> handleMissingParameter(MissingServletRequestParameterException error,
                                                     HttpServletRequest request) {
         return respond(ErrorCode.MISSING_PARAMETER, request, Map.of(), error.getParameterName());
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    ResponseEntity<ApiErrorDto> handleMissingPart(MissingServletRequestPartException error,
+                                                  HttpServletRequest request) {
+        return respond(ErrorCode.MISSING_PARAMETER, request, Map.of(), error.getRequestPartName());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiErrorDto> handleUploadSize(MaxUploadSizeExceededException error,
+                                                 HttpServletRequest request) {
+        return respond(ErrorCode.FILE_TOO_LARGE, request, Map.of());
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    ResponseEntity<ApiErrorDto> handleMultipart(MultipartException error, HttpServletRequest request) {
+        return respond(ErrorCode.MALFORMED_REQUEST, request, Map.of());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

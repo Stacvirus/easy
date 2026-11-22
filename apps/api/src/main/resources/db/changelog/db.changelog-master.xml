@@ -5,4 +5,7 @@
     <changeSet id="V1__identity_subjects_documents" author="document-digitization">
         <sqlFile path="migrations/V1__identity_subjects_documents.sql" relativeToChangelogFile="true" splitStatements="true"/>
     </changeSet>
+    <changeSet id="V2__document_pages_and_object_deletions" author="document-digitization">
+        <sqlFile path="migrations/V2__document_pages_and_object_deletions.sql" relativeToChangelogFile="true" splitStatements="true"/>
+    </changeSet>
 </databaseChangeLog>

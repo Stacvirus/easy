@@ -6,6 +6,9 @@ Current routes use `/api/v1`. `POST /auth/register` and `POST /auth/login` accep
 
 - `/subjects`: create (`POST`), list (`GET`), get (`GET /{id}`), rename (`PATCH /{id}`), delete (`DELETE /{id}`). Deletion returns 409 while documents reference the subject.
 - `/documents`: create (`POST`), list (`GET`), get (`GET /{id}`), delete (`DELETE /{id}`). The create body has `title`, `documentDate` (`YYYY-MM-DD`) and optional `subjectId`. The client supplies today's local date when the user accepts the default. List filters are optional `subjectId` and `date` query parameters.
+- `/documents/{id}/pages`: upload one or more images (`POST` multipart field `files`), list in saved order (`GET`), and replace the full order (`PUT /order` with `{"pageIds":[...]}`). Positions start at 1. `GET /{pageId}/content` returns the original image for an authorized preview, and `DELETE /{pageId}` removes a page. Responses contain stable page IDs and metadata but no object keys.
+
+Uploads accept JPEG and PNG only, with a 10 MB limit per image, a 50 MB request limit, and a maximum of 50 pages per document. The API checks the actual image format and decoded dimensions, not just the filename or declared content type. Reordering must include every current page ID exactly once. Deleted images are queued for retryable cleanup in MinIO.
 
 Owned records belonging to another account return 404. Invalid request bodies return 400; duplicate email or subject name returns 409. Error responses contain `timestamp`, `status`, `errorCode`, `message`, `path`, `correlationId` and `fields`. The same safe `X-Correlation-Id` is returned as a response header and included in request logs.
 

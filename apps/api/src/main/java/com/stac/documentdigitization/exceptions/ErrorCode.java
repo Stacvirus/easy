@@ -22,6 +22,14 @@ public enum ErrorCode {
     SUBJECT_IN_USE(HttpStatus.CONFLICT, "error.subject.in.use"),
     SUBJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "error.subject.not.found"),
     DOCUMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "error.document.not.found"),
+    PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "error.page.not.found"),
+    PAGE_ORDER_INVALID(HttpStatus.BAD_REQUEST, "error.page.order.invalid"),
+    PAGE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "error.page.limit.exceeded"),
+    FILE_EMPTY(HttpStatus.BAD_REQUEST, "error.file.empty"),
+    FILE_TOO_LARGE(HttpStatus.CONTENT_TOO_LARGE, "error.file.too.large"),
+    FILE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "error.file.type.not.allowed"),
+    INVALID_IMAGE(HttpStatus.BAD_REQUEST, "error.invalid.image"),
+    STORAGE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "error.storage.unavailable"),
     CONFLICT(HttpStatus.CONFLICT, "error.conflict"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "error.internal");
 

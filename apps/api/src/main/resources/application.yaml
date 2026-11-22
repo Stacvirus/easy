@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: document-digitization-api
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
   messages:
     basename: i18n/messages
     encoding: UTF-8
@@ -35,3 +39,9 @@ app:
   i18n:
     default-locale: en
     supported-locales: en,fr
+  storage:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    region: us-east-1
+    bucket: document-images
+    access-key: ${MINIO_ROOT_USER:minioadmin}
+    secret-key: ${MINIO_ROOT_PASSWORD:local-development-only}
