@@ -1,0 +1,22 @@
+server:
+  port: ${API_PORT:8080}
+
+spring:
+  application:
+    name: document-digitization-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/document_digitization}
+    username: ${SPRING_DATASOURCE_USERNAME:documents}
+    password: ${SPRING_DATASOURCE_PASSWORD:local-development-only}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
