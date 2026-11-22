@@ -11,6 +11,7 @@ import {
   MoreHorizontal,
   Plus,
   Trash2,
+  X,
 } from 'lucide-react'
 import { api, type Auth, type Subject } from '../lib/api'
 import { errorText } from '../lib/presentation'
@@ -23,6 +24,8 @@ export function Sidebar({
   isLoading,
   subjectFilter,
   selectedDocument,
+  mobileOpen,
+  onMobileClose,
   onSelect,
   onSignOut,
   onMessage,
@@ -33,6 +36,8 @@ export function Sidebar({
   isLoading: boolean
   subjectFilter: string
   selectedDocument: boolean
+  mobileOpen: boolean
+  onMobileClose: () => void
   onSelect: (filter: string) => void
   onSignOut: () => void
   onMessage: (text: string, error?: boolean) => void
@@ -82,13 +87,24 @@ export function Sidebar({
   }
 
   return (
-    <aside className="sidebar">
+    <aside
+      id="workspace-navigation"
+      className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}
+      aria-label={t('workspace.navigation')}
+    >
       <div className="brand">
         <span className="brand-mark">
           <Layers3 size={20} />
         </span>
         Document Studio
       </div>
+      <button
+        className="mobile-menu-close"
+        aria-label={t('workspace.closeMenu')}
+        onClick={onMobileClose}
+      >
+        <X size={20} />
+      </button>
       <div className="sidebar-section">
         <p className="sidebar-label">{t('workspace.eyebrow')}</p>
         <button

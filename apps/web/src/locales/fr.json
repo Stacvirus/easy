@@ -157,6 +157,9 @@
     "deleteConfirm": "Supprimer {{name}} ? Les documents associés doivent d’abord être supprimés."
   },
   "workspace": {
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "navigation": "Navigation de l’espace de travail",
     "eyebrow": "ESPACE DE TRAVAIL",
     "myWorkspace": "Mon espace",
     "topbarCaption": "Vos documents, bien organisés.",

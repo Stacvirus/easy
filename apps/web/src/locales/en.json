@@ -157,6 +157,9 @@
     "deleteConfirm": "Delete {{name}}? Documents assigned to it must be removed first."
   },
   "workspace": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "navigation": "Workspace navigation",
     "eyebrow": "WORKSPACE",
     "myWorkspace": "My workspace",
     "topbarCaption": "Your documents, in good order.",

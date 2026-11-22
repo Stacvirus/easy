@@ -13,7 +13,7 @@ import { DocumentDetail } from './DocumentDetail'
 import { api, type Auth } from '../lib/api'
 import { labelDate, today } from '../lib/presentation'
 import { CreateDocument } from './CreateDocument'
-import { Sidebar } from './Sidebar'
+import { WorkspaceNavigation } from './WorkspaceNavigation'
 import { Library } from './Library'
 import { LanguageSwitch } from './LanguageSwitch'
 
@@ -41,13 +41,12 @@ export function Workspace({
   })
   const allSubjects = subjects.data ?? []
   const message = (text: string, error = false) => setNotice({ text, error })
-
   return (
     <div className="app-shell">
-      <Sidebar
+      <WorkspaceNavigation
         auth={auth}
         token={token}
-        allSubjects={allSubjects}
+        subjects={allSubjects}
         isLoading={subjects.isLoading}
         subjectFilter={subjectFilter}
         selectedDocument={!!selectedId}
