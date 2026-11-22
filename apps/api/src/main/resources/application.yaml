@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: document-digitization-api
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/document_digitization}
     username: ${SPRING_DATASOURCE_USERNAME:documents}
@@ -20,3 +24,14 @@ management:
     web:
       exposure:
         include: health,info
+
+logging:
+  pattern:
+    level: "%5p [correlationId=%X{correlationId:-N/A}]"
+
+app:
+  auth:
+    jwt-secret: ${APP_JWT_SECRET}
+  i18n:
+    default-locale: en
+    supported-locales: en,fr

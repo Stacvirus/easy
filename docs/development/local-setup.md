@@ -2,7 +2,7 @@
 
 Prerequisites: Docker with Compose, Java 21 with Maven, Node 24 with npm, and Python 3.10 or newer.
 
-1. Copy `.env.example` to `.env` if changing local ports or credentials. Compose uses the example defaults without a `.env` file.
+1. Copy `.env.example` to `.env`. Replace `APP_JWT_SECRET` with a random value of at least 32 bytes (for example, generate one with `openssl rand -hex 32`). Before starting the API directly, load `.env` into the shell with `set -a; source .env; set +a`. Compose uses its example defaults for PostgreSQL and MinIO if `.env` is absent.
 2. Start dependencies: `docker compose -f infrastructure/compose.yaml up -d --wait`.
 3. Start the API from `apps/api`: `mvn spring-boot:run`. Check `http://localhost:8080/actuator/health`.
 4. Start OCR from `apps/ocr-service`: run `python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt`, then `.venv/bin/uvicorn app.main:app --reload`. If your Python installation lacks `venv`, use `uv venv --clear --python python3 .venv && uv pip install --python .venv/bin/python -r requirements-dev.txt`. Check `http://localhost:8000/health`.
@@ -13,3 +13,5 @@ PostgreSQL listens on host port 5433; MinIO API on 9000 and console on 9001. Com
 For a Java 21 container build without host Java 21, run `docker build -t document-api:local apps/api`. `apps/api/Dockerfile`, `apps/ocr-service/Dockerfile`, and `apps/web/Dockerfile` support container builds, while direct process startup remains the normal development path.
 
 For the optional OCR benchmark, install `apps/ocr-service/requirements-ocr.txt` in its virtual environment and follow [the benchmark commands](../architecture/ocr-processing.md). The normal OCR service startup does not download model weights.
+
+API integration tests use an isolated PostgreSQL Testcontainer. From `apps/api`, run `mvn test` with Java 21 and Docker available. The tests do not write to the Compose development database.

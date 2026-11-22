@@ -1,6 +1,6 @@
 # Document Digitization
 
-Monorepo for a student document workflow: React web app, Spring Boot API, and Python OCR service. This first increment supplies the local foundation; upload and conversion features are scheduled in [the implementation checklist](docs/development/implementation-checklist.md).
+Monorepo for a student document workflow: React web app, Spring Boot API, and Python OCR service. The API currently supports registration, login, user-owned subjects and document metadata. Upload and conversion features are scheduled in [the implementation checklist](docs/development/implementation-checklist.md).
 
 ## Start locally
 

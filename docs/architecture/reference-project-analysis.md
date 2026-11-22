@@ -31,7 +31,7 @@ Controllers use request/response DTOs and delegate to services; they do not expo
 ## Proposed backend layout
 
 ```text
-com.example.documentdigitization
+com.stac.documentdigitization
 ├── controllers
 ├── dtos.requests / dtos.responses
 ├── services                 # add interfaces/implementations only where useful
