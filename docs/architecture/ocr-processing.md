@@ -6,6 +6,8 @@ The API sends each original image to `POST /internal/recognize?language=en|fr` w
 
 The service also exposes `/health` for process health. PaddleOCR models load on first recognition request, so the first conversion can take longer.
 
+The FastAPI entry point in `app/main.py` registers routes from `app/api/v1`. Request and response models live in `app/schemas`, token and upload configuration in `app/core`, and PaddleOCR/DOCX implementations in `app/services`. The route paths above are unchanged. `OCR_MAX_IMAGE_BYTES` defaults to 10 MB, matching the API's per-image limit. Dependencies remain pinned in `requirements.txt`; `pyproject.toml` holds pytest configuration. PDF conversion, preprocessing and background workers are not part of the current service.
+
 ## First measured baseline (22 November 2026)
 
 The baseline uses PaddleOCR 3.3.0, PaddlePaddle 3.2.0, `PP-OCRv5_mobile_det`, `en_PP-OCRv5_mobile_rec` for English and `latin_PP-OCRv5_mobile_rec` for French. Both recognition models are listed in [PaddleOCR's multilingual model documentation](https://www.paddleocr.ai/latest/en/version3.x/algorithm/PP-OCRv5/PP-OCRv5_multi_languages.html). Orientation and unwarping classifiers were disabled. No additional image preprocessing or text correction was applied. Text regions were sorted left to right because every benchmark image contains one cropped line.

@@ -6,7 +6,7 @@ import time
 import unicodedata
 from pathlib import Path
 
-from app.ocr import PaddleOcrEngine, RecognizedLine
+from app.services.ocr_engine import PaddleOcrEngine, RecognizedLine
 
 
 def normalize(text: str) -> str:

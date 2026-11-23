@@ -3,7 +3,7 @@
 from pathlib import Path
 from types import SimpleNamespace
 
-from app.ocr import PaddleOcrEngine, RecognizedLine
+from app.services.ocr_engine import PaddleOcrEngine, RecognizedLine
 
 
 def test_recognition_retains_text_score_and_box() -> None:

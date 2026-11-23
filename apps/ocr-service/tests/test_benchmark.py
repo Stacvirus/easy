@@ -1,6 +1,6 @@
 """Check metric behavior independently of model inference."""
 
-from app.ocr import RecognizedLine
+from app.services.ocr_engine import RecognizedLine
 from scripts.benchmark import edit_distance, line_text, normalize
 
 

@@ -1,7 +1,9 @@
 """PaddleOCR baseline for handwritten text; models are loaded on first use."""
 
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
+from threading import Lock
 from typing import Protocol
 
 
@@ -57,3 +59,12 @@ class PaddleOcrEngine:
                     )
         lines.sort(key=lambda line: (line.box[1], line.box[0]) if line.box else (0, 0))
         return lines
+
+
+ocr_lock = Lock()
+
+
+@lru_cache(maxsize=2)
+def get_engine(language: str) -> OcrEngine:
+    """Load each language's model once per OCR process."""
+    return PaddleOcrEngine(language)
